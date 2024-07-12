@@ -1,0 +1,20 @@
+networks:
+  default:
+    external: true
+    name: lb-common
+
+services:
+  backstage:
+    image: louislam/uptime-kuma:1.23.13-alpine
+    container_name: backstage
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.backstage.entrypoints=web"
+      - "traefik.http.routers.backstage.rule=Host(`backstage.local.io`)"
+      - "traefik.http.routers.backstage.service=svc_backstage"
+      - "traefik.http.services.svc_backstage.loadbalancer.server.port=7007"
+    volumes:
+      - ../data:/app/data
+    networks:
+      - default
